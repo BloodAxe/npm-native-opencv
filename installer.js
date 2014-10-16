@@ -49,7 +49,7 @@ if (fs.existsSync('opencv/')) {
 
 console.log('Loading OpenCV from ', opencvArchive);
 
-var download = new Download({ extract: true, strip: false })
+var download = new Download({ extract: true, strip: (isUnix() || isDarwin()) })
     .get(opencvArchive)
     .dest('opencv')
     .use(progress());
