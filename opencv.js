@@ -121,6 +121,9 @@ module.exports = {
         }
         
         if (isDarwin()) {
+            var opencv_lib_dir = path.resolve(__dirname, 'opencv', 'lib');
+            var opencv_3rd_dir = path.resolve(__dirname, 'opencv', 'share', 'OpenCV', '3rdparty', 'lib');
+
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_calib3d',       this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_contrib',       this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_core',          this.version));
