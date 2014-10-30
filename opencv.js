@@ -1,9 +1,5 @@
-var Download = require('download');
-var progress = require('download-status');
-var fs       = require('fs');
-var os       = require('os');
-var path     = require('path');
-var opencv   = require('./opencv.js');
+var path = require('path');
+var os   = require('os');
 
 function isDarwin() {
     return os.platform() == 'darwin';
@@ -21,44 +17,143 @@ function is64bit() {
     return os.arch() == 'x64';
 }
 
-var cdn = 'http://static.computer-vision-talks.com/dist/opencv/';
+function mangleName(name, version, debug) {
+    var prefix = (isUnix() || isDarwin()) ? 'lib' : '';
+    var suffix = (isWindows() ? version : '');   
+    var ext    = (isWindows() ? '.lib' : '.a');
+    if (debug)
+        suffix += 'd';
 
-var opencvArchive = '';
+    return prefix + name + suffix + ext;
+}
 
-if (isWindows()) {
-    if (is64bit()) {
-        opencvArchive = cdn + 'opencv-3.0.0-vc12-x64.zip';
+function mangleRuntimeLib(name, version, debug) {
+    var prefix = (isUnix() || isDarwin()) ? 'lib' : '';
+    var suffix = (version && (isUnix() || isDarwin())) ? version : '';   
+    var ext    = (isWindows() ? '.dll' : '.so');
+    if (debug)
+        suffix += 'd';
+
+    return prefix + name + suffix + ext;
+}
+
+module.exports = {
+    version: '300',
+
+    dll_files: function(toolset, debug) {
+        if (isWindows()) {
+            var arch = is64bit() ? 'x64' : 'x86';
+            var opencv_dll_dir = path.resolve(__dirname, 'opencv', arch, toolset, 'bin');
+            var libs = [
+                opencv_dll_dir + '/' + mangleRuntimeLib('opencv_ffmpeg300_64')
+            ]
+            console.log(libs.join(' '));
+        }
+    },
+
+    libraries: function(debug) {
+        
+        var ocv_libraries = [];
+        var trd_libraries = [];
+
+        if (isWindows()) {
+            var opencv_lib_dir = path.resolve(__dirname, 'opencv', 'lib');
+
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_calib3d',     this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_core',        this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_features2d',  this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_flann',       this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_highgui',     this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_imgcodecs',   this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_imgproc',     this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ml',          this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_objdetect',   this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_photo',       this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_shape',       this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_stitching',   this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_superres',    this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ts',          this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_video',       this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videoio',     this.version, debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videostab',   this.version, debug));
+
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('IlmImf',    '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('libjasper', '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('libjpeg',   '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('libpng',    '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('libtiff',   '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('libwebp',   '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('zlib',      '', debug));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('ippicvmt',  '', false));
+
+
+            console.log(ocv_libraries.join(';'));
+        }
+        
+        if (isUnix()) {
+            var opencv_lib_dir = path.resolve(__dirname, 'opencv', 'lib');
+            var opencv_3rd_dir = path.resolve(__dirname, 'opencv', 'share', 'OpenCV', '3rdparty', 'lib');
+
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_calib3d',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_core',          this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_features2d',    this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_flann',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_highgui',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_imgcodecs',     this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_imgproc',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ml',            this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_objdetect',     this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_photo',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_shape',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_stitching',     this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_superres',      this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ts',            this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_video',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videoio',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videostab',     this.version));
+
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('ippicv'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libjpeg'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libpng'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('zlib'));
+
+            console.log(ocv_libraries.join(' ') + ' ' + trd_libraries.join( ' '));
+        }
+        
+        if (isDarwin()) {
+            var opencv_lib_dir = path.resolve(__dirname, 'opencv', 'lib');
+            var opencv_3rd_dir = path.resolve(__dirname, 'opencv', 'share', 'OpenCV', '3rdparty', 'lib');
+
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_calib3d',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_contrib',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_core',          this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_features2d',    this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_flann',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_highgui',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_imgproc',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_legacy',        this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ml',            this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_nonfree',       this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_objdetect',     this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_optim',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_photo',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_shape',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_softcascade',   this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_stitching',     this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_superres',      this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ts',            this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_video',         this.version));
+            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videostab',     this.version));
+
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libjpeg'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libpng'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('zlib'));
+
+            console.log(ocv_libraries.join(' ') + ' ' + trd_libraries.join( ' '));
+        }
+    },
+
+    include_dirs: function() {
+        console.log(path.resolve(__dirname, 'opencv', 'include'));
     }
-    else {
-        opencvArchive = cdn + 'opencv-3.0.0-vc12-x86.zip';        
-    }
-}
-else if (isDarwin()) {
-    opencvArchive = cdn + 'opencv-3.0.0-darwin.zip';
-}
-else if (isUnix()) {
-    opencvArchive = cdn + 'opencv-3.0.0-unix.zip';
-} 
-else {
-    throw 'Your platform ' + os.platform() + '/' + os.type() + ' is not supported. Sorry.';
-}
-
-if (fs.existsSync(path.resolve(__dirname, 'opencv'))) {
-    console.log("OpenCV directory already exists. Skipping download.");
-    return;
-}
-
-console.log('Loading OpenCV from ', opencvArchive);
-
-var download = new Download({ extract: true, strip: (isUnix() || isDarwin()) })
-    .get(opencvArchive)
-    .dest('opencv')
-    .use(progress());
-
-download.run(function (err, files, stream) {
-    if (err) {
-        throw err;
-    }
-
-    console.log('File downloaded successfully!');
-});
+};

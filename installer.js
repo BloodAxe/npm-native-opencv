@@ -2,6 +2,7 @@ var Download = require('download');
 var progress = require('download-status');
 var fs       = require('fs');
 var os       = require('os');
+var path     = require('path');
 var opencv   = require('./opencv.js');
 
 function isDarwin() {
@@ -42,7 +43,7 @@ else {
     throw 'Your platform ' + os.platform() + '/' + os.type() + ' is not supported. Sorry.';
 }
 
-if (fs.existsSync('opencv/')) {
+if (fs.existsSync(path.resolve(__dirname, 'opencv'))) {
     console.log("OpenCV directory already exists. Skipping download.");
     return;
 }
