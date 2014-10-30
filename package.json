@@ -2,13 +2,14 @@
   "name": "native-opencv",
   "version": "3.0.0",
   "description": "OpenCV library installed via NMP",
+  "keywords": [ "opencv", "native", "bindings", "cv" ],
   "main": "opencv.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/BloodAxe/npm-native-opencv.git"
   },
   "scripts": {
-    "postinstall": "node installer.js"
+    "prepublish": "node installer.js"
   },
   "contributors": [
     "Eugene Khvedchenya <ekhvedchenya@gmail.com> (https://github.com/BloodAxe)"
@@ -19,5 +20,11 @@
     "download": "^3.0.1",
     "download-status": "^2.0.4"
   },
-  "license": "MIT"
+  
+  "license": "MIT",
+  
+  "bugs": { 
+    "url" : "https://github.com/BloodAxe/npm-native-opencv/issues",
+     "email" : "ekhvedchenya@gmail.com"
+  },
 }
