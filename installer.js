@@ -52,11 +52,12 @@ console.log('Loading OpenCV from ', opencvArchive);
 
 var download = new Download({ extract: true, strip: (isUnix() || isDarwin()) })
     .get(opencvArchive)
-    .dest('opencv')
+    .dest(path.resolve(__dirname, 'opencv'))
     .use(progress());
 
 download.run(function (err, files, stream) {
     if (err) {
+        console.log('Caught error during unzip:', err);
         throw err;
     }
 
