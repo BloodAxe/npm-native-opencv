@@ -15,7 +15,7 @@
     "url": "git://github.com/BloodAxe/npm-native-opencv.git"
   },
   "scripts": {
-    "install": "node installer.js"
+    "postinstall": "node installer.js"
   },
   "contributors": [
     "Eugene Khvedchenya <ekhvedchenya@gmail.com> (https://github.com/BloodAxe)"

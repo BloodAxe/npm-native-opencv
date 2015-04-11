@@ -43,23 +43,32 @@ else {
     throw 'Your platform ' + os.platform() + '/' + os.type() + ' is not supported. Sorry.';
 }
 
-if (fs.existsSync(path.resolve(__dirname, 'opencv'))) {
-    console.log("OpenCV directory already exists. Skipping download.");
-    return;
+var opencvPath = path.resolve(__dirname, 'opencv');
+console.log('OpenCV will be downloaded to ', opencvPath);
+
+function runInOpenCVDoesNotExists(cb) {
+    fs.mkdir(opencvPath, 0777, function(err) {
+        if (err)
+            console.log("OpenCV directory already exists. Skipping download.");
+        else 
+            cb(); // successfully created folder
+    });    
 }
 
-console.log('Loading OpenCV from ', opencvArchive);
+runInOpenCVDoesNotExists(function() {
+    console.log('Loading OpenCV from ', opencvArchive);
 
-var download = new Download({ extract: true, strip: (isUnix() || isDarwin()) })
-    .get(opencvArchive)
-    .dest(path.resolve(__dirname, 'opencv'))
-    .use(progress());
+    var download = new Download({ extract: true, strip: (isUnix() || isDarwin()) })
+        .get(opencvArchive)
+        .dest(path.resolve(__dirname, 'opencv'))
+        .use(progress());
 
-download.run(function (err, files, stream) {
-    if (err) {
-        console.log('Caught error during unzip:', err);
-        throw err;
-    }
+    download.run(function (err, files, stream) {
+        if (err) {
+            console.log('Caught error during unzip:', err);
+            throw err;
+        }
 
-    console.log('File downloaded successfully!');
+        console.log('File downloaded successfully!');
+    });
 });
