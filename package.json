@@ -1,6 +1,6 @@
 {
   "name": "native-opencv",
-  "version": "3.0.1",
+  "version": "3.0.0b",
   "description": "OpenCV library installed via NMP",
   "keywords": [
     "opencv",
