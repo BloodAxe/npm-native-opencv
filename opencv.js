@@ -132,7 +132,6 @@ module.exports = {
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_imgproc',       this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_ml',            this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_objdetect',     this.version));
-            ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_optim',         this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_photo',         this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_shape',         this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_stitching',     this.version));
@@ -142,10 +141,10 @@ module.exports = {
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videoio',       this.version));
             ocv_libraries.push(opencv_lib_dir + '/' + mangleName('opencv_videostab',     this.version));
 
-            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('jpeg'));
-            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('png'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libjpeg'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libpng'));
             trd_libraries.push(opencv_3rd_dir + '/' + mangleName('zlib'));
-            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('tiff'));
+            trd_libraries.push(opencv_3rd_dir + '/' + mangleName('libtiff'));
             trd_libraries.push(opencv_3rd_dir + '/' + mangleName('ippicv'));
 
             console.log(ocv_libraries.join(' ') + ' ' + trd_libraries.join( ' '));
