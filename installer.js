@@ -34,10 +34,10 @@ if (isWindows()) {
     }
 }
 else if (isDarwin()) {
-    opencvArchive = cdn + 'opencv-3.0.0-darwin.zip';
+    opencvArchive = cdn + 'opencv-3.0.0b-darwin.zip';
 }
 else if (isUnix()) {
-    opencvArchive = cdn + 'opencv-3.0.0-unix.zip';
+    opencvArchive = cdn + 'opencv-3.0.0b-unix.zip';
 } 
 else {
     throw 'Your platform ' + os.platform() + '/' + os.type() + ' is not supported. Sorry.';
